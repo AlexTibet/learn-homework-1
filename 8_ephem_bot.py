@@ -13,7 +13,9 @@
 
 """
 import logging
+from datetime import datetime
 
+import ephem
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
@@ -42,11 +44,28 @@ def talk_to_me(update, context):
     update.message.reply_text(text)
 
 
+def planet(update, context):
+    planet_list = ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'Sun', 'Moon']
+    answer = f"Попробуйте написать /planet _Название-планеты_\n`Известные мне планеты: {', '.join(planet_list)}.`"
+    if not len(context.args) == 0:
+        query = update.message.text.split()[1]
+        if query in planet_list:
+            date = datetime.now().strftime("%Y/%m/%d")
+            target = getattr(ephem, query)(date)
+            target_position = ephem.constellation(target)
+            answer = f"`Планета` {target.name} `сегодня в созвездии` {target_position[0]}\n" \
+                     f"`Также известном как` {target_position[1]}"
+        else:
+            answer = "`Планета не найдена`\n" + answer
+    update.message.reply_text(answer, parse_mode="Markdown")
+
+
 def main():
     mybot = Updater("КЛЮЧ, КОТОРЫЙ НАМ ВЫДАЛ BotFather", request_kwargs=PROXY, use_context=True)
 
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler("start", greet_user))
+    dp.add_handler(CommandHandler('planet', planet))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     mybot.start_polling()
