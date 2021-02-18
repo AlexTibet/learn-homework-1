@@ -31,8 +31,9 @@ def ask_user(answers_dict):
     """
     while True:
         ask = input('Пользователь: ')
-        if ask in answers_dict.keys():
-            print(f"Программа: {answers_dict[ask]}")
+        answer = answers_dict.get(ask)
+        if answer:
+            print(f"Программа: {answer}")
 
     
 if __name__ == "__main__":
