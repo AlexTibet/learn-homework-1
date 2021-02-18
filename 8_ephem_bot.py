@@ -52,9 +52,9 @@ def planet(update, context):
         if query in planet_list:
             date = datetime.now().strftime("%Y/%m/%d")
             target = getattr(ephem, query)(date)
-            target_position = ephem.constellation(target)
-            answer = f"`Планета` {target.name} `сегодня в созвездии` {target_position[0]}\n" \
-                     f"`Также известном как` {target_position[1]}"
+            target_position, target_position_full = ephem.constellation(target)
+            answer = f"`Планета` {target.name} `сегодня в созвездии` {target_position}\n" \
+                     f"`Также известном как` {target_position_full}"
         else:
             answer = "`Планета не найдена`\n" + answer
     update.message.reply_text(answer, parse_mode="Markdown")
