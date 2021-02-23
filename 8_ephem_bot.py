@@ -64,12 +64,17 @@ def planet(update, context):
     update.message.reply_text(answer, parse_mode="Markdown")
 
 
+def wordcount(update, context):
+    update.message.reply_text(f"`{len(context.args)}`", parse_mode="Markdown")
+
+
 def main():
     mybot = Updater("КЛЮЧ, КОТОРЫЙ НАМ ВЫДАЛ BotFather", request_kwargs=PROXY, use_context=True)
 
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler("start", greet_user))
     dp.add_handler(CommandHandler('planet', planet))
+    dp.add_handler(CommandHandler('wordcount', wordcount))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     mybot.start_polling()
