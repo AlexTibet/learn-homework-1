@@ -18,6 +18,8 @@ from datetime import datetime
 import ephem
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
+from city_game import CityGame
+
 logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO,
                     filename='bot.log')
