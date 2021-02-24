@@ -14,12 +14,26 @@
 
 """
 
+
+def define_activities(age: int) -> str:
+    if age >= 23:
+        return 'работать'
+    elif age >= 18:
+        return 'учиться в ВУЗе'
+    elif age >= 6:
+        return 'учиться в школе'
+    return 'учиться в детском саду'
+
+
 def main():
     """
     Эта функция вызывается автоматически при запуске скрипта в консоли
     В ней надо заменить pass на ваш код
     """
-    pass
+    age = int(input())
+    activities = define_activities(age)
+    print(activities)
+
 
 if __name__ == "__main__":
     main()
