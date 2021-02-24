@@ -81,6 +81,49 @@ def next_full_moon(update, context):
                               parse_mode="Markdown")
 
 
+def city_game(update, context):
+    game = context.user_data.get('city_game')
+
+    if game is None:
+        game = CityGame()
+        game.start_new_game()
+
+    try:
+        player_city = update.message.text.split()[1]
+    except IndexError:
+        answer = '`Введите после "Город" название города на русском языке.`\n' \
+                 '`Если название города состоит из нескольких слов то разделяйте их дефисами "-"`'
+        return update.message.reply_text(answer, parse_mode="Markdown")
+
+    if not game.check_last_char(player_city):
+        return update.message.reply_text(f"{player_city} `начинается не на` *{game.last_char}*", parse_mode="Markdown")
+
+    if not game.check_city(player_city.lower()):
+        return update.message.reply_text(
+            f"`Города {player_city} нет в моей базе данных, попробуйте ещё раз`", parse_mode="Markdown"
+        )
+
+    new_city = game.get_city(player_city.lower())
+    if new_city is None:
+        username = update.effective_chat['username']
+        answer = f'''
+        *Поздравляю* {username}!\n
+        `Городов начинающихся на` *{game.last_char}* `больше нет в моей базе данных.`\n
+        `Вы выйграли назвав` *{game.score}* `города(ов).`
+        '''
+        context.user_data.pop('city_game')
+        return update.message.reply_text(answer, parse_mode="Markdown")
+
+    context.user_data['city_game'] = game
+    last_char = player_city[-1].upper()
+    new_last_char = game.last_char
+    answer = f"`Ваш город:` {player_city} `заканчивается на букву` *{last_char}*\n" \
+             f"`Мой ответ:` {new_city.capitalize()}.\n`Теперь Вам город на букву` *{new_last_char}*" \
+             f"`На данный момент ваш счёт равен` *{game.score}*"
+
+    update.message.reply_text(answer, parse_mode="Markdown")
+
+
 def main():
     mybot = Updater("КЛЮЧ, КОТОРЫЙ НАМ ВЫДАЛ BotFather", request_kwargs=PROXY, use_context=True)
 
@@ -89,6 +132,7 @@ def main():
     dp.add_handler(CommandHandler('planet', planet))
     dp.add_handler(CommandHandler('wordcount', wordcount))
     dp.add_handler(CommandHandler('next_full_moon', next_full_moon))
+    dp.add_handler(MessageHandler(Filters.regex('^[Гг]ород'), city_game))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     mybot.start_polling()
