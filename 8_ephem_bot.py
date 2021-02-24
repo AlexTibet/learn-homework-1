@@ -65,7 +65,8 @@ def planet(update, context):
 
 
 def wordcount(update, context):
-    update.message.reply_text(f"`{len(context.args)}`", parse_mode="Markdown")
+    count = len(context.args)
+    update.message.reply_text(f"`{count}`", parse_mode="Markdown")
 
 
 def next_full_moon(update, context):
