@@ -119,10 +119,11 @@ def city_game(update, context):
     context.user_data['city_game'] = game
     last_char = player_city[-1].upper()
     new_last_char = game.last_char
-    answer = f"`Ваш город:` {player_city} `заканчивается на букву` *{last_char}*\n" \
-             f"`Мой ответ:` {new_city.capitalize()}.\n`Теперь Вам город на букву` *{new_last_char}*" \
-             f"`На данный момент ваш счёт равен` *{game.score}*"
-
+    answer = (
+        f"`Ваш город:` {player_city} `заканчивается на букву` *{last_char}*\n"
+        f"`Мой ответ:` {new_city.capitalize()}.\n`Теперь Вам город на букву` *{new_last_char}*\n"
+        f"На данный момент ваш счёт равен` *{game.score}*"
+    )
     update.message.reply_text(answer, parse_mode="Markdown")
 
 

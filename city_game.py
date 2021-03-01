@@ -7,7 +7,7 @@ class CityGame:
     def __init__(self):
         self.score = 0
         self.last_char = None
-        self._city_list = defaultdict(set)
+        self._cities = defaultdict(set)
 
     def _create_city_list(self):
         """
@@ -18,7 +18,7 @@ class CityGame:
         with open(settings.CITY_DB_NAME, 'r', encoding='utf-8') as file:
             for line in file:
                 city = line.strip().lower()
-                self._city_list[city[0]].add(city)
+                self._cities[city[0]].add(city)
 
     def start_new_game(self):
         """ Начинаем игру или обновляем """
@@ -34,16 +34,16 @@ class CityGame:
     def check_city(self, player_city: str) -> bool:
         """ Проверяет наличие player_city и удаляет его возвращая True, в противном случае False"""
         try:
-            self._city_list[player_city[0]].remove(player_city)
+            self._cities[player_city[0]].remove(player_city)
         except KeyError:
             return False
         self.score += 1
         return True
 
-    def _get_valid_last_char(self, city_name):
+    def _get_valid_last_char(self, city_name: str):
         """ Проходит по city_name начиная с конца, выбирает символ так, чтобы в базе были слова начинающиеся на него"""
         for char in city_name[::-1]:
-            if char in self._city_list:
+            if char in self._cities:
                 return char
         raise KeyError
 
@@ -55,7 +55,7 @@ class CityGame:
         """
         try:
             last_char = self._get_valid_last_char(player_city)
-            new_city = self._city_list[last_char].pop()
+            new_city = self._cities[last_char].pop()
             self.last_char = self._get_valid_last_char(new_city)
         except KeyError:
             return None
