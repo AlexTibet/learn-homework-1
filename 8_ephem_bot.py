@@ -93,8 +93,10 @@ def city_game(update, context):
     try:
         player_city = update.message.text.split()[1]
     except IndexError:
-        answer = '`Введите после "Город" название города на русском языке.`\n' \
-                 '`Если название города состоит из нескольких слов то разделяйте их дефисами "-"`'
+        answer = (
+            '`Введите после "Город" название города на русском языке.`\n'
+            '`Если название города состоит из нескольких слов то разделяйте их дефисами "-"`'
+        )
         return update.message.reply_text(answer, parse_mode="Markdown")
 
     if not game.check_last_char(player_city):
